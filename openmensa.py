@@ -115,6 +115,16 @@ def dump_mensa_to_csv(mensa_id, mensa_prefix, start, stop):
     return filename
 
 
+def load_csvs(glob_name):
+    """ Read all csv files identified by a given glob as a pandas dataframe. """
+    import glob
+    import pandas as pd
+
+    csvs = glob.glob(glob_name)
+    meals_all = (pd.read_csv(csv, parse_dates=["date"]) for csv in csvs)
+    return pd.concat(meals_all, ignore_index=True)
+
+
 if __name__ == "__main__":
     start = datetime.date(2012, 7, 1)
     stop = datetime.date(2020, 2, 7)
@@ -122,7 +132,7 @@ if __name__ == "__main__":
     mensa_prefix = "Marburg, "
 
     csv_files = []
-    for mensa_id in range(113, 117):
-        csv_files.append(dump_mensa_to_csv(mensa_id, "Marburg, ", start, stop))
+    for mensa_id in mensas:
+        csv_files.append(dump_mensa_to_csv(mensa_id, mensa_prefix, start, stop))
 
     print("Dumped {}".format(", ".join(csv_files)))
